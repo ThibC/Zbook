@@ -1,6 +1,5 @@
 const express = require('express');
 const morgan = require('morgan');
-const cors = require('cors');
 const config = require('./config.json');
 const zoomApiClient = require('./services/zoomApiClient');
 const datetimeFormatter = require('./services/datetimeFormatter');
@@ -10,7 +9,6 @@ const app = express();
 const BASE_URL = '/api/v1';
 
 app.use(morgan('dev'));
-app.use(cors());
 app.use(express.json());
 
 app.get(`${BASE_URL}/health-check`, ((req, res, next) =>

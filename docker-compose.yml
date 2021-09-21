@@ -1,0 +1,33 @@
+version: '3'
+
+# Docker is only used in dev environment
+
+services:
+  back:
+    image: node:15.4.0
+    container_name: zbook_back
+    working_dir: /back
+    volumes:
+      - ./back:/back:cached
+    command: npm start
+    expose:
+      - 4040
+
+  front:
+    image: node:15.4.0
+    container_name: zbook_front
+    working_dir: /front
+    volumes:
+      - ./front:/front
+    command: npm start
+    expose:
+      - 8080
+
+  nginx:
+    build: devops/nginx
+    container_name: zbook_nginx
+    volumes:
+      - ./devops/nginx/sites-enabled:/etc/nginx/sites-enabled
+      - ./devops/nginx/ssl:/etc/nginx/ssl
+    ports:
+      - 127.0.0.1:9090:9090

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_API_URL = 'http://localhost:4040/api/v1';
+const BASE_API_URL = '/api/v1';
 
 
 export const createMeeting = (topic, start_date, end_date) => {

@@ -4,18 +4,16 @@ An application to easily schedule meetings on zoom.
 
 ## Prerequisite
 
-- Node: 15.4.0
+- Docker & docker-compose
 
 ## Installation
 
 ```bash
 git clone https://github.com/ThibC/zbook.git
 cd zbook
-# Front 
-cd front
-npm i 
+make install
 # Back
-cd ../back
+cd back
 npm i
 cp config.json.dist config.json
 # ask for a JWT token
@@ -25,10 +23,7 @@ cp config.json.dist config.json
 ## Running the project
 
 ```bash 
-# in back folder
-npm start # start the express server on localhost:4040
-# in front folder
-npm start # start the webpack server on http://localhost:8080
+make daemon # launch project on http://localhost:9090
 ```
 
-You can go to http://localhost:8080 to test the app.
+You can go to http://localhost:9090 to test the app.

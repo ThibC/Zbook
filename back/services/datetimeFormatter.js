@@ -9,9 +9,9 @@ const formatTimeForZoomApi = (start_date, end_date) => {
     const end = moment(end_date, RECEIVED_FROM_FRONT_FORMAT);
 
     return {
-        start_time: start.format(ZOOM_FORMAT),
+        start_time: start.format(RECEIVED_FROM_FRONT_FORMAT),
         duration: end.diff(start, 'minutes'),
-        timezone: moment_timezone.tz.guess(),
+        timezone: 'UTC',
     }
 };
 
