@@ -1,5 +1,9 @@
 {
   "express": {
        "PORT": 4040
+  },
+  "zoom": {
+    "ZOOM_API_BASE_URL": "https://api.zoom.us/v2",
+    "jwt_token": "<ASK FOR JWT TOKEN>"
   }
 }
