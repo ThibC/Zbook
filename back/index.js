@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const config = require('./config.json');
+const zoomApiClient = require('./services/zoomApiClient');
+const datetimeFormatter = require('./services/datetimeFormatter');
 
 
 const app = express();
@@ -15,8 +17,21 @@ app.get(`${BASE_URL}/health-check`, ((req, res, next) =>
 
 app.post(`${BASE_URL}/meetings`, ((req, res, next) => {
     const data = req.body;
-    console.log(data);
-    res.status(200).send({ status: 'ok' });
+    const formattedData = datetimeFormatter.formatTimeForZoomApi(data.start_date, data.end_date);
+    console.log(formattedData);
+    zoomApiClient.createMeeting(
+        data.topic,
+        formattedData.start_time,
+        formattedData.duration,
+        formattedData.timezone,
+    ).then(() => {
+        console.log('SUCCESS!');
+        res.status(200).send({ status: 'ok' });
+    }).catch((e) => {
+        console.log(e);
+        res.status(500).send({ status: 'failed' });
+    });
+
 }));
 
 app.listen(config.express.PORT, () => console.log(`Server running on port ${config.express.PORT}`));
