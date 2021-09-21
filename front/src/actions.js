@@ -1,4 +1,5 @@
 import { requestEventsInRange, requestEventCreate, requestEventUpdate, requestEventDelete } from './requests'
+import { createMeeting } from './apiClient';
 
 export default {
 
@@ -21,7 +22,14 @@ export default {
 
   createEvent(plainEventObject) {
     return (dispatch) => {
-      return requestEventCreate(plainEventObject).then((newEventId) => {
+      console.log("ICI");
+      console.log(plainEventObject);
+
+      return createMeeting(
+          plainEventObject.title,
+          plainEventObject.start,
+          plainEventObject.end,
+      ).then((newEventId) => {
         dispatch({
           type: 'CREATE_EVENT',
           plainEventObject: {

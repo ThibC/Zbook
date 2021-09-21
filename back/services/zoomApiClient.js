@@ -14,7 +14,7 @@ const createMeeting = (topic, start_time, duration, timezone) => {
         start_time,
         duration,
         timezone,
-    }, { headers: getZoomHeaders() });
+    }, { headers: getZoomHeaders() }).then(res => res.data);
 }
 
 module.exports = {

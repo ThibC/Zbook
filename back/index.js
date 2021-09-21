@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 const config = require('./config.json');
 const zoomApiClient = require('./services/zoomApiClient');
 const datetimeFormatter = require('./services/datetimeFormatter');
@@ -9,6 +10,7 @@ const app = express();
 const BASE_URL = '/api/v1';
 
 app.use(morgan('dev'));
+app.use(cors());
 app.use(express.json());
 
 app.get(`${BASE_URL}/health-check`, ((req, res, next) =>
@@ -24,9 +26,8 @@ app.post(`${BASE_URL}/meetings`, ((req, res, next) => {
         formattedData.start_time,
         formattedData.duration,
         formattedData.timezone,
-    ).then(() => {
-        console.log('SUCCESS!');
-        res.status(200).send({ status: 'ok' });
+    ).then((zoomData) => {
+        res.status(200).send({ status: 'ok', zoomId: zoomData.id });
     }).catch((e) => {
         console.log(e);
         res.status(500).send({ status: 'failed' });
