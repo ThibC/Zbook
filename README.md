@@ -30,3 +30,5 @@ npm start # start the express server on localhost:4040
 # in front folder
 npm start # start the webpack server on http://localhost:8080
 ```
+
+You can go to http://localhost:8080 to test the app.
