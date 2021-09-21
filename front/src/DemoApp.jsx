@@ -32,10 +32,7 @@ class DemoApp extends React.Component {
             select={this.handleDateSelect}
             events={this.props.events}
             eventContent={renderEventContent} // custom render function
-            eventClick={this.handleEventClick}
             eventAdd={this.handleEventAdd}
-            eventChange={this.handleEventChange} // called for drag-n-drop/resize
-            eventRemove={this.handleEventRemove}
           />
         </div>
       </div>
@@ -92,18 +89,11 @@ class DemoApp extends React.Component {
     }
   }
 
-  handleEventClick = (clickInfo) => {
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-      clickInfo.event.remove() // will render immediately. will call handleEventRemove
-    }
-  }
-
   // handlers that initiate reads/writes via the 'action' props
   // ------------------------------------------------------------------------------------------
 
   handleDates = (rangeInfo) => {
-    this.props.requestEvents(rangeInfo.startStr, rangeInfo.endStr)
-      .catch(reportNetworkError)
+    // TODO: Make a call to API to retrieve events
   }
 
   handleEventAdd = (addInfo) => {
@@ -113,23 +103,6 @@ class DemoApp extends React.Component {
         addInfo.revert()
       })
   }
-
-  handleEventChange = (changeInfo) => {
-    this.props.updateEvent(changeInfo.event.toPlainObject())
-      .catch(() => {
-        reportNetworkError()
-        changeInfo.revert()
-      })
-  }
-
-  handleEventRemove = (removeInfo) => {
-    this.props.deleteEvent(removeInfo.event.id)
-      .catch(() => {
-        reportNetworkError()
-        removeInfo.revert()
-      })
-  }
-
 }
 
 function renderEventContent(eventInfo) {

@@ -12,11 +12,3 @@ export function hashById(array) {
 
   return hash
 }
-
-export function excludeById(array, id) {
-  return array.filter((item) => item.id !== id)
-}
-
-export function getTodayStr() {
-  return new Date().toISOString().replace(/T.*$/, '')
-}
