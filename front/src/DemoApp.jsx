@@ -1,19 +1,23 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import FullCalendar, { formatDate } from '@fullcalendar/react'
+import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
+import { ToastContainer, toast } from 'react-toastify';
+import moment from 'moment';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 import interactionPlugin from '@fullcalendar/interaction'
 import actionCreators from './actions'
-import { getHashValues } from './utils'
+import { getHashValues, formatPromptMessage } from './utils'
 
 class DemoApp extends React.Component {
 
   render() {
     return (
       <div className='demo-app'>
-        {this.renderSidebar()}
         <div className='demo-app-main'>
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -33,49 +37,24 @@ class DemoApp extends React.Component {
             events={this.props.events}
             eventContent={renderEventContent} // custom render function
             eventAdd={this.handleEventAdd}
+            allDaySlot={false}
+            selectAllow={(selectInfo) => {
+              return moment().diff(selectInfo.start) <= 0;
+            }}
           />
+          <ToastContainer position="top-center" theme="colored" />
         </div>
       </div>
     )
   }
 
-  renderSidebar() {
-    return (
-      <div className='demo-app-sidebar'>
-        <div className='demo-app-sidebar-section'>
-          <h2>Instructions</h2>
-          <ul>
-            <li>Select dates and you will be prompted to create a new event</li>
-            <li>Drag, drop, and resize events</li>
-            <li>Click an event to delete it</li>
-          </ul>
-        </div>
-        <div className='demo-app-sidebar-section'>
-          <label>
-            <input
-              type='checkbox'
-              checked={this.props.weekendsVisible}
-              onChange={this.props.toggleWeekends}
-            ></input>
-            toggle weekends
-          </label>
-        </div>
-        <div className='demo-app-sidebar-section'>
-          <h2>All Events ({this.props.events.length})</h2>
-          <ul>
-            {this.props.events.map(renderSidebarEvent)}
-          </ul>
-        </div>
-      </div>
-    )
-  }
 
   // handlers for user actions
   // ------------------------------------------------------------------------------------------
 
   handleDateSelect = (selectInfo) => {
-    let calendarApi = selectInfo.view.calendar
-    let title = prompt('Please enter a new title for your event')
+    let calendarApi = selectInfo.view.calendar;
+    let title = prompt(`${formatPromptMessage(selectInfo.startStr, selectInfo.endStr)}. Please enter the topic:`)
 
     calendarApi.unselect() // clear date selection
 
@@ -98,9 +77,9 @@ class DemoApp extends React.Component {
 
   handleEventAdd = (addInfo) => {
     this.props.createEvent(addInfo.event.toPlainObject())
-      .catch(() => {
-        reportNetworkError()
-        addInfo.revert()
+        .then(() => toast.success('Event successfully created!')).catch(() => {
+            toast.error('This action could not be completed');
+            addInfo.revert();
       })
   }
 }
@@ -112,19 +91,6 @@ function renderEventContent(eventInfo) {
       <i>{eventInfo.event.title}</i>
     </>
   )
-}
-
-function renderSidebarEvent(plainEventObject) {
-  return (
-    <li key={plainEventObject.id}>
-      <b>{formatDate(plainEventObject.start, {year: 'numeric', month: 'short', day: 'numeric'})}</b>
-      <i>{plainEventObject.title}</i>
-    </li>
-  )
-}
-
-function reportNetworkError() {
-  alert('This action could not be completed')
 }
 
 function mapStateToProps() {
